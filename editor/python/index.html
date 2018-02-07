@@ -1,0 +1,205 @@
+<!doctype html>
+
+<title>Murmur online editor</title>
+<meta charset="utf-8"/>
+<link rel=stylesheet href="../../doc/docs.css">
+
+<link rel="stylesheet" href="../../lib/codemirror.css">
+<script src="../../lib/codemirror.js"></script>
+<script src="../../addon/edit/matchbrackets.js"></script>
+<script src="python.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+<style type="text/css">
+  .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
+  body { padding: 20px; }
+
+  .error { color: red; }
+
+  #loader {
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+  }
+
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+</style>
+
+
+<body>
+  <div id="loader"></div>
+
+  <h2>Murmur: Program your inbox!</h2>
+
+    Email address: <input id="username" type="text"/>
+    Password: <input id="password" type="password"/>
+    <button onclick="authenticate()">Log in</button>
+    <span id="auth-msg"></span>
+
+      <div style="padding-top:  50px;"><textarea id="code" name="code">
+def notifyWhen(incoming):
+    # Notify me every 5 emails arrive 
+    if incoming.getCount() >= 5:
+        return True
+
+    return False
+
+queue(notifyWhen, ["INBOX", "folder1"])
+
+#logout() # Terminate your email engine
+  </textarea>
+  <button id="submit" onclick="submitCommand()" disabled>Submit</button>
+  </div>
+
+  <div style="background: black;width:100%;padding-left: 40px;color: white;" id="console"></div>
+
+  <script>
+    var config = {
+      apiKey: "AIzaSyCOFXECn39JmWeykyPVv2fU6GClWNJeUek",
+      authDomain: "murmur-183618.firebaseapp.com",
+      databaseURL: "https://murmur-183618.firebaseio.com",
+      projectId: "murmur-183618",
+      storageBucket: "murmur-183618.appspot.com",
+      messagingSenderId: "1035128514395"
+    };
+    firebase.initializeApp(config);
+
+    var uid = "";
+    var auth = false, execute = false;
+
+    function authenticate() {
+      $("#loader").show();
+
+      uid = hashCode(document.getElementById("username").value)
+      var playersRef = firebase.database().ref("users/" + uid);
+        // users/2017-3-6
+
+      playersRef.set({
+              "type": "auth",
+              "username": document.getElementById("username").value,
+              "password": document.getElementById("password").value
+          },
+          function(response) {
+            if(response)
+              console.log("Firebase: Error at submiting command " + response);
+            else {
+              // successfully submitted, show a msg to user
+              installListener();
+            }
+          });
+    }
+
+    function hideLoader() {
+      $("#loader").hide();
+    }
+
+    function installListener() {
+      var msgRef = firebase.database().ref("messages/" + uid);
+        msgRef.on('child_added', function(snapshot) {
+          console.log("New message: ");
+          // console.log(snapshot.val());
+          if(snapshot.val()["auth"]) {
+            if(snapshot.val()["code"] == 200){
+              $("#auth-msg").text(snapshot.val()["auth"]);
+              $("#auth-msg").removeClass("error");
+              
+              $("button").prop("disabled",false);
+              auth = true;
+
+              
+              
+            }
+            else {
+              $("#auth-msg").text(snapshot.val()["auth"]);
+
+              $("#auth-msg").addClass("error");
+            }
+
+            myVar = setTimeout(hideLoader, 3000);
+          }
+          else { // after auth success
+            if(!auth || !execute) return;
+
+            if(snapshot.val()["type"] == "error")  {
+              $("#console").text(snapshot.val()["content"]);
+              $("#console").addClass("error");
+            }
+            else {
+              $("#console").text(snapshot.val()["content"]);
+              $("#console").removeClass("error");
+            }
+          }
+
+      });
+    }
+
+    function hashCode(str){
+      var hash = 0;
+      if (str.length == 0) return hash;
+      for (i = 0; i < str.length; i++) {
+          char = str.charCodeAt(i);
+          hash = ((hash<<5)-hash)+char;
+          hash = hash & hash; // Convert to 32bit integer
+      }
+      return hash;
+    }
+
+    function submitCommand() {
+      if(uid == "") {
+        alert("Log in first!");
+        return;
+      }
+
+      // Clean up previous execution result
+      $("#console").text("")
+
+      var playersRef = firebase.database().ref("users/" + uid);
+        // users/2017-3-6
+
+      playersRef.push({
+              "type": "cmd",
+              "uid": uid.toString(),
+              "content": editor.getValue()
+          },
+          function(response) {
+            execute = true;
+            if(response)
+              console.log("Firebase: Error at submiting command " + response);
+            else {
+              // successfully submitted, show a msg to user
+            }
+          });
+    }
+
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+      mode: {name: "python",
+             version: 3,
+             singleLineStringErrors: false},
+      lineNumbers: true,
+      indentUnit: 4,
+      matchBrackets: true
+    });
+  </script>
+</body>
