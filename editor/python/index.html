@@ -61,7 +61,7 @@
       <div style="padding-top:  50px;"><textarea id="code" name="code">
 def notifyWhen(incoming):
     # Notify me every 5 emails arrive 
-    if incoming.getCount() >= 5:
+    if incoming.getCount() >= 5 or any(("karger" in s) or ("axz" in s) for s in incoming.getSender()):
         return True
 
     return False
