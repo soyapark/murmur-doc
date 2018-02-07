@@ -1,0 +1,1243 @@
+{
+	"mavoClass": [
+		{
+			"name": "Mavo",
+			"description": "`Mavo` is the main class. Every Mavo app is an instance of `Mavo` and `mavo.js` is the entry point of Mavo itself.",
+			"filename": "mavo.js",
+			"member": [
+				{
+					"static": false,
+					"argument": [
+						{
+							"name": "element",
+							"type": "Element",
+							"description": "The Mavo root element",
+							"optional": false
+						}
+					],
+					"role": "constructor"
+				},
+				{
+					"name": "treeBuilt",
+					"type": "Promise",
+					"static": false,
+					"description": "Promise that resolves when the Mavo tree has been built.",
+					"argument": [
+						{
+							"optional": false
+						}
+					],
+					"role": "property"
+				},
+				{
+					"name": "element",
+					"role": "property",
+					"type": "Element",
+					"static": false,
+					"description": "The Mavo root element. Same element that was passed to the constructor.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "root",
+					"type": "Mavo.Group",
+					"static": false,
+					"role": "property",
+					"description": "Root Mavo node (always a group).",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "index",
+					"type": "Number",
+					"static": false,
+					"role": "property",
+					"description": "Index among other mavos in the page, 1 is first",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "id",
+					"type": "String",
+					"static": false,
+					"role": "property",
+					"description": "Unique id for this Mavo app. This usually comes from the `mv-app` attribute. However, if there are duplicate ids in `mv-app`, then a number is appended. If `mv-app` is empty, then the id is generated from by concatenating string \"mavo\" and the app's [index](#Mavo#index)",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "inProgress",
+					"role": "accessor",
+					"type": "String",
+					"static": false,
+					"description": "Name of event that is currently in progress (e.g. `\"Loading\"`, `\"Saving\"` etc), if any, `false` otherwise. Setting this triggers the progress indicator UI.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "locale",
+					"type": "Mavo.Locale",
+					"static": false,
+					"role": "property",
+					"description": "The locale for this Mavo app, depending on any `lang` attribute defined either on the app or an ancestor. If none is found, the default is English.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "autoEdit",
+					"type": "Boolean",
+					"static": false,
+					"role": "property",
+					"description": "Should this Mavo start in edit mode? Corresponds to the `mv-autoedit` class.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "autoSave",
+					"type": "Boolean",
+					"static": false,
+					"role": "property",
+					"description": "Should we save automatically? Corresponds to whether the `mv-autosave` attribute is present.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "autoSaveDelay",
+					"type": "Number",
+					"static": false,
+					"role": "property",
+					"description": "Throttle delay for autosaving. Taken from the value of `mv-autosave`, defaults to 3s if none.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "expressions",
+					"type": "Mavo.Expressions",
+					"static": false,
+					"role": "property",
+					"description": "[Mavo.Expressions](#Mavo.Expressions) object corresponding to this instance.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "permissions",
+					"type": "Mavo.Permissions",
+					"static": false,
+					"role": "property",
+					"description": "[Mavo.Permissions](#Mavo.Permissions) object that corresponds to the permissions in this Mavo (taken from its backend(s)). In the future, individual Mavo nodes may have their own permissions, but right now permissions are app-wide.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "bar",
+					"type": "Mavo.UI.Bar",
+					"static": false,
+					"role": "property",
+					"description": "[Mavo.UI.Bar](#Mavo.UI.Bar) object that corresponds to the Mavo toolbar for this app.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "needsEdit",
+					"type": "Boolean",
+					"static": false,
+					"role": "property",
+					"description": "True if there is any property that may require an edit button (e.g. forms do not), false otherwise.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "getData",
+					"type": "Object",
+					"static": false,
+					"role": "function",
+					"description": "Calls `getData()` on the root node.",
+					"argument": [
+						{
+							"name": "o",
+							"type": "Object",
+							"description": "Configuration object. For details see [Mavo.Node#getData()](Mavo.Node#getData)",
+							"optional": false
+						}
+					],
+					"returnType": "Object",
+					"returnDescription": "Data of entire Mavo app"
+				},
+				{
+					"name": "toJSON",
+					"type": "String",
+					"static": false,
+					"role": "function",
+					"description": "Serializes all current data as JSON",
+					"argument": [],
+					"returnType": "String",
+					"returnDescription": "The current data as a JSON string"
+				},
+				{
+					"name": "all",
+					"type": "Object",
+					"static": true,
+					"role": "property",
+					"description": "Object with all Mavo instances that are currently active on the page. These can be accessed by index, e.g. `Mavo.all[0]` or by name, like `Mavo.all.appid`.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Mavo.Node",
+			"filename": "node.js",
+			"description": "Every property corresponds to an instance of this class, i.e. a node in the Mavo tree.  This is an abstract class, and is never instantiated directly. It's the class that `Mavo.Group`, `Mavo.Collection`, and `Mavo.Primitive` all inherit from.",
+			"member": [
+				{
+					"static": false,
+					"role": "constructor",
+					"argument": [
+						{
+							"optional": false,
+							"name": "element",
+							"type": "Element",
+							"description": "The DOM element that corresponds to this node"
+						},
+						{
+							"name": "mavo",
+							"optional": false,
+							"type": "Mavo",
+							"description": "The Mavo instance that this node belongs to."
+						}
+					]
+				},
+				{
+					"name": "uid",
+					"type": "Number",
+					"static": false,
+					"role": "property",
+					"description": "A number unique to this Mavo Node. Useful for debugging.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "property",
+					"type": "String",
+					"static": false,
+					"role": "property",
+					"description": "The property name of this node, if any. This is only `null` for the root node, any other node should have a property name.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "element",
+					"type": "Element",
+					"static": false,
+					"role": "property",
+					"description": "The DOM element that represents this Mavo Node in the HTML. Same as the `element` argument that was passed to the constructor.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "mavo",
+					"type": "Mavo",
+					"static": false,
+					"role": "property",
+					"description": "The Mavo instance that this node belongs to. Same as the `mavo` argument that was passed to its constructor.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "group",
+					"type": "Mavo.Group",
+					"static": false,
+					"role": "property",
+					"description": "The group that this node belongs to. If this node is a group, this will be equal to the node itself.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "parentGroup",
+					"type": "Mavo.Group",
+					"static": false,
+					"role": "property",
+					"description": "The parent group of this node. This will be the same as `group`, unless the node is a group, in which case it will be equal to its parent.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "alias",
+					"type": "String",
+					"static": false,
+					"role": "property",
+					"description": "The value of the `mv-alias` attribute, if one is present, `null` otherwise.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "template",
+					"type": "Mavo.Node",
+					"static": false,
+					"role": "property",
+					"description": "A reference to the first Mavo node like this one that was ever created. This is `null` for properties that are not inside any collection, or for the first item of a collection across all its instances. I.e. even if a collection is nested within another collection, there is only one template per collection.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "copies",
+					"type": "Array",
+					"static": false,
+					"role": "property",
+					"description": "If this node is a template for other nodes (i.e. the first of its kind, see above), this will be an array of all nodes whose `template` property refers to this one.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "modes",
+					"type": "String",
+					"static": false,
+					"role": "property",
+					"description": "If this node is restricted to a specific mode (`\"read\"` or `\"edit\"`), this property will contain that mode, otherwise it will be `null`.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "mode",
+					"static": false,
+					"role": "property",
+					"description": "Current mode, `\"read\"` or `\"edit\"`.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "getData",
+					"static": false,
+					"role": "function",
+					"description": "Return the current data of this node as a JS object. This is the data used in expressions or for storing.",
+					"argument": [
+						{
+							"name": "options",
+							"optional": true,
+							"type": "Object",
+							"description": "Options object. The supported options are:\n\n- **live** (`Boolean`): `true` if we want data for expressions, `false` if we want data for saving.\n- **forceObjects** (`Boolean`): Force all primitives to be objects (which have a reference back to the Mavo node they came from). If `false`, only collection items are forced to be objects, and only in expressions."
+						}
+					],
+					"returnType": "Object",
+					"returnDescription": "The current data of this object"
+				},
+				{
+					"name": "walk",
+					"static": false,
+					"role": "function",
+					"description": "Execute a callback on every node of the Mavo tree. If callback returns (strict) false, walk stops.",
+					"argument": [
+						{
+							"name": "callback",
+							"optional": false,
+							"type": "Functions",
+							"description": "The callback to execute on every node. It’s called with the current node, and the current node’s path as its arguments."
+						},
+						{
+							"name": "path",
+							"optional": true,
+							"type": "Array",
+							"description": "Prepend the path passed to `callback` with this."
+						},
+						{
+							"name": "options",
+							"optional": true,
+							"type": "Object",
+							"description": "Options object. Currently only supports one option: **descentReturn** (`Boolean`). By default, if `callback` returns `false`, the walk stops immediately. However, if descentReturn is `true`, the walk doesn’t stop, it just does not descend deeper."
+						}
+					],
+					"returnType": "Boolean",
+					"returnDescription": "`false` if was stopped via a `false` callback return value, true otherwise"
+				},
+				{
+					"name": "walkUp",
+					"static": false,
+					"role": "function",
+					"description": "Execute a callback for each of this node’s ancestors.",
+					"argument": [
+						{
+							"name": "callback",
+							"optional": false,
+							"type": "Function",
+							"description": "The callback to execute. The current ancestor node is passed as a first argument. If it returns anything other than `undefined`, the ascent stops and the function returns that value."
+						}
+					],
+					"returnDescription": "The return value of **callback**, or `undefined` if the ascent finished."
+				},
+				{
+					"name": "get",
+					"static": true,
+					"role": "function",
+					"description": "Get the Mavo node that corresponds to a particular DOM element, if one exists.",
+					"argument": [
+						{
+							"name": "element",
+							"type": "Element",
+							"description": "The DOM element to look up",
+							"optional": false
+						},
+						{
+							"name": "prioritizePrimitive",
+							"type": "Boolean",
+							"description": "If both a Group and a Primitive exist on the same element, the default behavior is to return the Group. Set this to true to return the Primitive instead.",
+							"optional": true
+						}
+					],
+					"returnType": "Mavo.Node",
+					"returnDescription": "The corresponding Mavo node or `undefined` if none exists."
+				}
+			]
+		},
+		{
+			"name": "Mavo.Group",
+			"parentClass": "Mavo.Node",
+			"filename": "group.js",
+			"description": "Group nodes are analogous to JSON objects. There is always at least one group in every Mavo: The root.",
+			"member": [
+				{
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					],
+					"name": "children",
+					"type": "Object",
+					"description": "Object literal with child properties. The keys are the property names and the values are the Mavo nodes of the properties (which could in turn be other groups, [primitives](#Mavo.Primitive), or [collections](#Mavo.Collection))."
+				}
+			],
+			"parent": "Mavo.Node"
+		},
+		{
+			"name": "Mavo.Collection",
+			"parent": "Mavo.Node",
+			"filename": "collection.js",
+			"description": "Collection nodes are analogous to JSON arrays, and correspond to `mv-multiple` elements. However, the collection itself is not represented by any HTML element, what is represented in the HTML is the collection *items*.",
+			"member": [
+				{
+					"name": "children",
+					"type": "Array",
+					"static": false,
+					"role": "property",
+					"description": "Array with all collection items. Collection items are other Mavo nodes, and can be either [groups](#Mavo.Group) or [primitives](#Mavo.Primitive).",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Mavo.Primitive",
+			"parent": "Mavo.Node",
+			"filename": "primitive.js",
+			"description": "Primitive nodes are analogous to JSON strings, numbers, and booleans. They correspond to property elements that do not contain other properties.",
+			"member": [
+				{
+					"name": "value",
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					],
+					"type": "String | Number | Boolean",
+					"description": "The current value of the node."
+				},
+				{
+					"name": "editor",
+					"type": "Element",
+					"static": false,
+					"role": "property",
+					"description": "DOM element used to edit this node",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Mavo.Locale",
+			"filename": "locale.js",
+			"description": "Class responsible for localization. Each locale is an instance of this.",
+			"member": [
+				{
+					"name": "lang",
+					"type": "String",
+					"static": false,
+					"role": "property",
+					"description": "Language code, based on HTML’s language codes, e.g. `\"en\"` or `\"en-GB\"`.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "phrases",
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Mavo.Formats.Base",
+			"filename": "formats.js",
+			"description": "[Mavo Formats](https://mavo.io/docs/formats/) are implemented as classes that inherit from `Mavo.Formats.Base`. `Mavo.Formats.Base` itself is abstract and should not be directly instantiated.",
+			"member": [
+				{
+					"name": "parse",
+					"static": false,
+					"role": "function",
+					"description": "Converts a string of serialized data to a data object",
+					"argument": [
+						{
+							"name": "content",
+							"type": "String",
+							"description": "Serialized data",
+							"optional": false
+						}
+					],
+					"returnType": "Object",
+					"returnDescription": "Data object"
+				},
+				{
+					"name": "stringify",
+					"static": false,
+					"role": "function",
+					"description": "Converts a data object to a serialized data string based on the current format.",
+					"argument": [
+						{
+							"name": "data",
+							"type": "Object",
+							"description": "Data object.",
+							"optional": false
+						}
+					],
+					"returnType": "String",
+					"returnDescription": "Serialized string corresponding to the data."
+				}
+			]
+		},
+		{
+			"name": "Mavo.Expressions",
+			"filename": "expressions.js",
+			"description": "Each Mavo app has one Expressions object that handles picking up expressions and creating the necessary objects for each.",
+			"member": [
+				{
+					"name": "update",
+					"static": false,
+					"role": "function",
+					"description": "Updates all expressions in the Mavo app.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Mavo.DOMExpression",
+			"filename": "domexpression.js",
+			"description": "A `DOMExpression` object is created for each text node or attribute that contains one or more expressions.",
+			"member": [
+				{
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Mavo.Expression",
+			"filename": "expression.js",
+			"description": "Expression instances are created for each expression. Copies of the expression (due to collection items) use the same Expression object.",
+			"member": [
+				{
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					],
+					"name": "expression",
+					"type": "String",
+					"description": "The expression that this object is about, e.g. `\"foo + 5\"`."
+				},
+				{
+					"name": "identifiers",
+					"type": "Array",
+					"static": false,
+					"role": "property",
+					"description": "Any identifiers used in the expression. This is used to determine when to re-evaluate it.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "function",
+					"type": "Function",
+					"static": false,
+					"role": "property",
+					"description": "The compiled JS function for this expression.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "eval",
+					"static": false,
+					"role": "function",
+					"description": "The latest value from evaluating this expression. Be wary of using this: since a single `Mavo.Expression` object can be used by multiple expressions, the usefulness of this value is very short-lived.",
+					"argument": [
+						{
+							"name": "data",
+							"optional": false,
+							"type": "Object",
+							"description": "The data to use as context"
+						}
+					],
+					"returnDescription": "Expression value or `Error` object if that produced an error"
+				},
+				{
+					"name": "changedBy",
+					"static": false,
+					"role": "function",
+					"description": "The previous value from evaluating this expression. Be wary of using this: since a single `Mavo.Expression` object can be used by multiple expressions, the usefulness of this value is very short-lived.",
+					"argument": [
+						{
+							"name": "event",
+							"optional": false,
+							"type": "Event",
+							"description": "Is this expression changed by this datachange event?"
+						}
+					],
+					"returnType": "Boolean",
+					"returnDescription": "`true` if expression needs to be re-evaluated, `false` if not."
+				}
+			]
+		},
+		{
+			"name": "Mavo.Script",
+			"filename": "mavoscript.js",
+			"description": "Static class with methods for implementing [MavoScript](mavoscript)",
+			"member": [
+				{
+					"name": "addUnaryOperator",
+					"static": true,
+					"role": "function",
+					"description": "Add a unary operator to the expression syntax.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "addBinaryOperator",
+					"static": true,
+					"role": "function",
+					"description": "Add a binary operator to the expression syntax.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Mavo.Functions",
+			"filename": "functions.js",
+			"description": "Static, contains all functions available in [MavoScript](mavoscript)",
+			"member": [
+				{
+					"name": "_Trap",
+					"type": "Proxy",
+					"static": true,
+					"role": "property",
+					"description": "Proxy against which expressions are evaluated (via `with`). This is second priority, after lookup in data has failed. It's used for things like case-insensitive functions and unquoted strings.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Mavo.Permissions",
+			"filename": "permissions.js",
+			"description": "Permissions such as edit, save, add, delete etc.",
+			"member": [
+				{
+					"static": false,
+					"role": "function",
+					"argument": [
+						{
+							"optional": false,
+							"name": "values",
+							"type": "Object",
+							"description": "Name-value pairs"
+						}
+					],
+					"name": "set",
+					"description": "Set multiple permissions at once"
+				},
+				{
+					"name": "on",
+					"static": false,
+					"role": "function",
+					"description": "Set a bunch of permissions to true. Chainable.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "off",
+					"static": false,
+					"role": "function",
+					"description": "Set a bunch of permissions to false. Chainable.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "can",
+					"static": false,
+					"role": "function",
+					"description": "Fired once at least one of the actions passed can be performed. Kind of like a Promise that can be resolved multiple times.",
+					"argument": [
+						{
+							"name": "actions",
+							"optional": false,
+							"type": "String | Array<String>"
+						},
+						{
+							"name": "callback",
+							"optional": false,
+							"type": "Function"
+						},
+						{
+							"name": "cannot",
+							"optional": true,
+							"type": "Function"
+						}
+					]
+				},
+				{
+					"name": "cannot",
+					"static": false,
+					"role": "function",
+					"description": "Fired once **none** of the actions can be performed",
+					"argument": [
+						{
+							"name": "actions",
+							"optional": false,
+							"type": "String | Array<String>"
+						},
+						{
+							"name": "callback",
+							"optional": false,
+							"type": "Function"
+						}
+					]
+				},
+				{
+					"name": "observe",
+					"static": false,
+					"role": "function",
+					"description": "Schedule a callback for when a set of permissions changes value",
+					"argument": [
+						{
+							"name": "actions",
+							"optional": false,
+							"type": "String | Array<String>"
+						},
+						{
+							"name": "value",
+							"optional": false,
+							"type": "Boolean"
+						},
+						{
+							"name": "callback",
+							"optional": false,
+							"type": "Functions"
+						}
+					]
+				},
+				{
+					"name": "is",
+					"static": false,
+					"role": "function",
+					"description": "Compare a set of permissions with true or false. If comparing with true, we want at least one to be true, i.e. OR. If comparing with false, we want ALL to be false, i.e. NOR.",
+					"argument": [
+						{
+							"name": "actions",
+							"optional": false,
+							"type": "String | Array<String>"
+						},
+						{
+							"name": "able",
+							"optional": false,
+							"type": "Boolean"
+						}
+					]
+				},
+				{
+					"name": "onchange",
+					"static": false,
+					"role": "function",
+					"description": "Monitor all changes on all permissions.",
+					"argument": [
+						{
+							"name": "callback",
+							"optional": false,
+							"type": "Function",
+							"description": "Called on any permission change. Its context will be this `Mavo.Permissions` object and its parameter a `{action, value}` object."
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Mavo.Backend",
+			"filename": "backend.js",
+			"description": "Base class for backends to inherit from.",
+			"member": [
+				{
+					"static": false,
+					"role": "constructor",
+					"argument": [
+						{
+							"name": "url",
+							"optional": false,
+							"type": "String",
+							"description": "The raw value of the `mv-storage`/`mv-source` etc attribute."
+						},
+						{
+							"name": "options",
+							"optional": false,
+							"type": "Object",
+							"description": "Options object. Current options are **mavo** and **format**."
+						}
+					]
+				},
+				{
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					],
+					"name": "mavo",
+					"type": "Mavo",
+					"description": "The Mavo instance that this node belongs to. Same as the `mavo` argument that was passed to its constructor."
+				}
+			]
+		},
+		{
+			"name": "Mavo.Plugins",
+			"filename": "plugins.js",
+			"description": "Static class with helpers for loading or creating plugins.",
+			"member": [
+				{
+					"name": "url",
+					"type": "String",
+					"static": true,
+					"role": "property",
+					"description": "Domain from which Plugins are loaded. Default value is `\"https://plugins.mavo.io\"`.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "loaded",
+					"type": "Object",
+					"static": true,
+					"role": "property",
+					"description": "Plugins currently loaded.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "plugins",
+					"type": "Set",
+					"static": false,
+					"role": "property",
+					"description": "ids of plugins loaded or loading via the `mv-plugins` attribute.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "load",
+					"static": true,
+					"role": "function",
+					"description": "Load all plugins called via the `mv-plugins` attribute. Mostly used internally.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "register",
+					"static": true,
+					"role": "function",
+					"description": "Register a new plugin.",
+					"argument": [
+						{
+							"name": "id",
+							"optional": false,
+							"type": "String",
+							"description": "Plugin id that will be used to call it via `mv-plugins`."
+						},
+						{
+							"name": "options",
+							"optional": true,
+							"type": "Object",
+							"description": "Options object. The supported options are:\n\n- **ready** (`Promise`):\n- **dependencies** (`Array<Promise>`): \n- **init** (`Function`): Function to execute after all dependencies have loaded.\n-**hooks** (`Object`): Object with [hook](/docs/plugins/#hooks) names and functions.\n-**extend** (`Object`): Want to add properties and methods to existing Mavo classes (or override existing methods)? Use this option! Keys are Mavo classe names without `Mavo.` (e.g. `\"Primitive\"`, \"Collection\" etc) and `\"Mavo\"` for the `Mavo` class."
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Mavo.UI.Bar",
+			"filename": "ui.bar.js",
+			"description": "Class for the Mavo toolbar.",
+			"member": [
+				{
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					],
+					"name": "mavo",
+					"type": "Mavo",
+					"description": "The Mavo instance that this node belongs to. Same as the `mavo` argument that was passed to its constructor."
+				}
+			]
+		},
+		{
+			"name": "Mavo.UI.Itembar",
+			"filename": "ui.itembar.js",
+			"description": "Class for the item bar that allows deleting, rearranging, cloning collection items.",
+			"member": [
+				{
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					],
+					"name": "mavo",
+					"type": "Mavo",
+					"description": "The Mavo instance that this node belongs to. Same as the `mavo` argument that was passed to its constructor."
+				}
+			]
+		},
+		{
+			"name": "Mavo.UI.Message",
+			"filename": "ui.message.js",
+			"description": "Class for messages displayed to the user, e.g. errors, notices etc.",
+			"member": [
+				{
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					],
+					"name": "mavo",
+					"type": "Mavo",
+					"description": "The Mavo instance that this node belongs to. Same as the `mavo` argument that was passed to its constructor."
+				}
+			]
+		},
+		{
+			"name": "Mavo.UI.Popup",
+			"filename": "ui.popup.js",
+			"description": "Class for the little tooltip-like popups for editing attributes.",
+			"member": [
+				{
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					],
+					"name": "mavo",
+					"description": "The Mavo instance that this node belongs to. Same as the `mavo` argument that was passed to its constructor."
+				}
+			]
+		},
+		{
+			"name": "Mavo.Observer",
+			"filename": "util.js",
+			"description": "Helper class to make Mutation observers more pleasant to deal with",
+			"member": [
+				{
+					"static": false,
+					"role": "constructor",
+					"argument": [
+						{
+							"name": "element",
+							"type": "Element",
+							"description": "The element to observe",
+							"optional": false
+						},
+						{
+							"name": "attribute",
+							"type": "String",
+							"description": "The attribute to observe (`null` if none)",
+							"optional": false
+						},
+						{
+							"name": "callback",
+							"type": "Function",
+							"description": "The callback to execute",
+							"optional": false
+						},
+						{
+							"name": "o",
+							"type": "Object",
+							"description": "Configuration object with any extra options to pass to `MutationObserver#observe()` ",
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "observer",
+					"type": "MutationObserver",
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "element",
+					"type": "Element",
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "attribute",
+					"type": "String",
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "callback",
+					"type": "Function",
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "options",
+					"type": "Object",
+					"static": false,
+					"role": "property",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "run",
+					"static": false,
+					"role": "function",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "stop",
+					"static": false,
+					"role": "function",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "sneak",
+					"static": false,
+					"role": "function",
+					"description": "Sneak some code past the observer, whether it's active or not.",
+					"argument": [
+						{
+							"name": "callback",
+							"type": "Function",
+							"description": "Code to run",
+							"optional": false
+						}
+					],
+					"returnDescription": "Return value of the callback"
+				},
+				{
+					"name": "destroy",
+					"static": false,
+					"role": "function",
+					"description": "Stop & destroy this observer.",
+					"argument": [
+						{
+							"optional": false
+						}
+					]
+				},
+				{
+					"name": "sneak",
+					"static": true,
+					"role": "function",
+					"description": "Same as the instance method, but can be used whether the observer exists or not. If the observer does not exist, the callback is still executed.",
+					"argument": [
+						{
+							"name": "observer",
+							"type": "Mavo.Observer",
+							"description": "The observer to call `sneak()` on",
+							"optional": false
+						}
+					],
+					"returnDescription": "Return value of the callback"
+				}
+			]
+		}
+	],
+	"collapse": {}
+}
