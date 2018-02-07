@@ -66,12 +66,30 @@ thead th:first-child {
 
 	<h3>getCount()</h3>
 	<p>Return a number of messages at the Mmail object.</p>
+	<pre class="language-html">
+		<code class="python">
+			print m.getCount()
+			>> 3
+		</code>
+	</pre>
 
 	<h3>getSender()</h3>
 	<p>Return a list of senders at the Mmail object.</p>
+	<pre class="language-html">
+		<code class="python">
+			print m.getSender()
+		>> ["Free food &lt;vulture@mit.edu&gt;", "Amy Zhang &lt;axz@mit.edu&gt;", "David Karger &lt;karger@mit.edu&gt;"]
+		</code>
+	</pre>
 
 	<h3>getRecipient()</h3>
 	<p>Return a list of recipients at the Mmail object.</p>
+	<pre class="language-html">
+		<code class="python">
+			print m.getRecipient()
+		>> ["Soya Park &lt;soya@gmail.com&gt;", "Amy Zhang &lt;axz@mit.edu&gt;", "David Karger &lt;karger@mit.edu&gt;"]
+		</code>
+	</pre>
 
 	<h3>Not supported yet - getAttachment()</h3>
 	<p>Return emails which have attachments.</p>
@@ -84,7 +102,12 @@ thead th:first-child {
 
 	<h3>getSubject()</h3>
 	<p>Return a list of subject of the messages at the Mmail object</p>
-
+	<pre class="language-html">
+		<code class="python">
+			print m.getSubject()
+			>> ["Free food at G5!", "Please read my draft", "FINAL HOURS: 20% OFF Sitewide!"]
+		</code>
+	</pre>
  	
 </section>
 
