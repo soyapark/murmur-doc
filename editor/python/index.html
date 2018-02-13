@@ -5,6 +5,8 @@
 <link rel=stylesheet href="../../doc/docs.css">
 
 <link rel="stylesheet" href="../../lib/codemirror.css">
+<link rel="stylesheet" href="../../lib/fontawesome-all.min.css">
+<script src="../../lib/fontawesome-all.min.js"></script>
 <script src="../../lib/codemirror.js"></script>
 <script src="../../addon/edit/matchbrackets.js"></script>
 <script src="python.js"></script>
@@ -15,7 +17,12 @@
   .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
   body { padding: 20px; }
 
+  .info {color: white;}
   .error { color: red; }
+
+  #console {
+    background: black;width:100%;padding-left: 40px;
+  }
 
   #loader {
     display: none;
@@ -45,6 +52,10 @@
     100% { transform: rotate(360deg); }
   }
 
+  #status {
+    display: none;
+  }
+
 </style>
 
 
@@ -52,11 +63,18 @@
   <div id="loader"></div>
 
   <h2>Murmur: Program your inbox!</h2>
-
+  <div id="login_window">
     Email address: <input id="username" type="text"/>
     Password: <input id="password" type="password"/>
     <button onclick="authenticate()">Log in</button>
     <span id="auth-msg"></span>
+  </div>
+
+  <div id="status">
+    Inbox engine status: <i class="fas fa-cog fa-3x"></i>
+    <button onclick="logout()">Log out</button>
+    <!-- <span id="auth-msg"></span> -->
+  </div>
 
       <div style="padding-top:  50px;"><textarea id="code" name="code">
 def notifyWhen(incoming):
@@ -66,14 +84,15 @@ def notifyWhen(incoming):
 
     return False
 
-queue(notifyWhen, ["INBOX", "folder1"])
-
-#logout() # Terminate your email engine
+def action():
+    send("to_addr@mit.edu", "Murmur: Full inbox", "Check your inbox")
+    
+queue(notifyWhen, action, ["INBOX", "folder1"])
   </textarea>
   <button id="submit" onclick="submitCommand()" disabled>Submit</button>
   </div>
 
-  <div style="background: black;width:100%;padding-left: 40px;color: white;" id="console"></div>
+  <div id="console" class="info"></div>
 
   <script>
     var config = {
@@ -87,10 +106,10 @@ queue(notifyWhen, ["INBOX", "folder1"])
     firebase.initializeApp(config);
 
     var uid = "";
-    var auth = false, execute = false;
+    var auth = false, execute = false, first = true;
 
     function authenticate() {
-      $("#loader").show();
+      showLoader(true);
 
       uid = hashCode(document.getElementById("username").value)
       var playersRef = firebase.database().ref("users/" + uid);
@@ -111,13 +130,37 @@ queue(notifyWhen, ["INBOX", "folder1"])
           });
     }
 
-    function hideLoader() {
-      $("#loader").hide();
+    function login_success() {
+      $("#login_window").hide();
+      $("#status").show();
+
+      showLoader(false);
+    }
+
+    function logout() {
+      $("#login_window").show();
+      $("#status").hide();
+    }
+
+    function showLoader(show) {
+      if(show)
+        $("#loader").show();
+      else 
+        $("#loader").hide();
+    }
+
+    function spinStatusCog(spin) {
+      if(spin)
+        $("svg.fa-cog").addClass("fa-spin");
+      else 
+        $("svg.fa-cog").removeClass("fa-spin");
     }
 
     function installListener() {
       var msgRef = firebase.database().ref("messages/" + uid);
-        msgRef.on('child_added', function(snapshot) {
+      var startKey = msgRef.push().key;
+
+        msgRef.orderByKey().startAt(startKey).on('child_added', function(snapshot) {
           console.log("New message: ");
           // console.log(snapshot.val());
           if(snapshot.val()["auth"]) {
@@ -129,29 +172,37 @@ queue(notifyWhen, ["INBOX", "folder1"])
               auth = true;
 
               
-              
+              myVar = setTimeout(login_success, 4000);
             }
             else {
               $("#auth-msg").text(snapshot.val()["auth"]);
 
               $("#auth-msg").addClass("error");
+
+              showLoader(false);
             }
 
-            myVar = setTimeout(hideLoader, 3000);
+            
           }
           else { // after auth success
             if(!auth || !execute) return;
 
             if(snapshot.val()["type"] == "error")  {
               $("#console").text(snapshot.val()["content"]);
-              $("#console").addClass("error");
+              $("#console").addClass("error").removeClass('info');
             }
             else {
               $("#console").text(snapshot.val()["content"]);
-              $("#console").removeClass("error");
+              $("#console").addClass("info").removeClass("error");
             }
           }
 
+      });
+
+      var ruuningRef = firebase.database().ref("running/" + uid);
+      ruuningRef.on('value', function(snapshot) {
+        if(snapshot.val()) spinStatusCog(true);
+        else spinStatusCog(false);
       });
     }
 

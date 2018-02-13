@@ -48,6 +48,11 @@ td:nth-child(2):empty::before {
 thead th:first-child {
 	width: 18%;
 }
+
+table.attributes {
+	    width: 100%;
+
+}
 </style>
 
 <section id="intro">
@@ -97,8 +102,14 @@ thead th:first-child {
 	<h3>Not supported yet - getContent()</h3>
 	<p>Return a content of emails at the Mmail object.</p>
 
-	<h3>Not supported yet - getFlags()</h3>
+	<h3>getFlags()</h3>
 	<p>Return a content of emails at the Mmail object.</p>
+	<pre class="language-html">
+		<code class="python">
+			print m.getFlags()
+			>> {msgid1: ["important", "\\Seen"], msgid2: ..}
+		</code>
+	</pre>
 
 	<h3>getSubject()</h3>
 	<p>Return a list of subject of the messages at the Mmail object</p>
@@ -113,14 +124,14 @@ thead th:first-child {
 
 <section>
 	<h1>queue</h1>
-	<p>If you enable this feature, your email clients don't give you notification until your defined queue is full. Once queue is full, it gives one notification, empty the queue and then repeat the process. </p>
+	<p>If you enable this feature, your email clients don't give you notification until your defined queue is full. Once queue is full, it gives one notification that the targeted email has arrived, empty the queue and then repeat the process. </p>
 
 	<table class="attributes">
 		<thead>
 			<tr>
-				<th style="width: 12%">Parameter</th>
+				<th style="width: 20%">Parameter</th>
 				<th style="width: 20%"></th>
-				<th style=""></th>
+				<th style="width: 60%"></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -131,18 +142,18 @@ thead th:first-child {
 				It must not be null.</td>
 			</tr>
 			<tr>
+				<td><code>action</code></td>
+				<td>function</td>
+				<td>What to do when queue is full</td>
+			</tr>
+			<tr>
 				<td>folders</td>
 				<td>list of string</td>
 				<td>Which folder to digest. If an email arrives at other folder, they wouldn't added to the queue.</td>
 			</tr>
-			<tr>
-				<td><code>digest_message</code></td>
-				<td>function</td>
-				<td>What to include at a digest email when the queue is full.</td>
-			</tr>
 		</tbody>
 	</table> 
-<br>
+	<br>
 	<pre class="language-html">
 		<code class="python">
 			def is_queue_full(inComingMmail):
@@ -151,6 +162,43 @@ thead th:first-child {
 				return False
 		</code>
 	</pre>
+</section>
+
+<section>
+	<h1>send</h1>
+	<p>Send an email </p>
+
+	<table class="attributes">
+		<thead>
+			<tr>
+				<th style="width: 20%">Parameter</th>
+				<th style="width: 20%"></th>
+				<th style=""></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>to_addr</td>
+				<td>string</td>
+				<td>Receipient address</td>
+			</tr>
+			<tr>
+				<td>subject</td>
+				<td>string</td>
+				<td>A subjet of email</td>
+			</tr>
+			<tr>
+				<td>content</td>
+				<td>string</td>
+				<td>Content of email</td>
+			</tr>
+		</tbody>
+	</table> 
+	<br>
+	<!-- <pre class="language-html">
+		<code class="python">
+		</code>
+	</pre> -->
 </section>
 
 <!-- <aside id="contents" class="no-toc">
