@@ -59,6 +59,8 @@ table.attributes {
 	<p>
 		Program your inbox with python!
 	</p>
+
+	<h6>(Gmail only) Before you start, go to <a href="https://myaccount.google.com/lesssecureapps">"Less secure apps" section of my Account.</a> And Enable less secure log in.</h6>
 </section>
 
 <section>
@@ -123,6 +125,128 @@ table.attributes {
 </section>
 
 <section>
+	<h1>Email event listener</h1>
+	<p class="note">If you'd like to get <strong>selective notifications</strong> for incoming emails, you should do these steps! <br/>
+	1. Create a folder name (<strong><em>murmur-test-all</em></strong>). <br/>
+	2. Make a filter(<strong><em>Exclude: sbhappylee@gmail.com</em></strong>) at the folder. <br/>
+	3. Use <code>send()</code> function and set parameter Admin as <code>True</code> Then you will get selective notifications only when your defined condition is satisfied.</p>
+
+	<h3>onArrive(doAction, folders=["INBOX"])</h3>
+	<p>Fire every time a new email has been arrived.</p>
+	<table class="attributes">
+		<thead>
+			<tr>
+				<th style="width: 20%">Parameter</th>
+				<th style="width: 20%"></th>
+				<th style="width: 60%"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><code>doAction</code></td>
+				<td>callable</td>
+				<td><code>doAction</code> is executed when a new email has arrived.</td>
+			</tr>
+			<tr>
+				<td>Not yet-<code>folders</code></td>
+				<td>list of string</td>
+				<td>Which folder to watch. If an email arrives at other folder, the event will not be fired.</td>
+			</tr>
+		</tbody>
+	</table> 
+	<br>
+	<pre class="language-html">
+		<code class="python">
+def doAction(email):
+    if "action required" in email.getSubject()[0]:
+    	send("to_me@mit.edu", "Check inbox!", email.getContent()[0])
+
+onArrive(doAction, ["INBOX", "folder1"])
+		</code>
+	</pre>
+
+	<h3>Not yet - onTime(doAction, interval=60)</h3>
+	<p>Fire every given interval.</p>
+	<table class="attributes">
+		<thead>
+			<tr>
+				<th style="width: 20%">Parameter</th>
+				<th style="width: 20%"></th>
+				<th style="width: 60%"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><code>doAction</code></td>
+				<td>callable</td>
+				<td><code>doAction</code> is executed every <code>interval</code></td>
+			</tr>
+			<tr>
+				<td><code>interval</code></td>
+				<td>number</td>
+				<td><code>interval</code> in minute.</td>
+			</tr>
+		</tbody>
+	</table> 
+	<br>
+	<pre class="language-html">
+		<code class="python">
+def doAction(emails):
+    email_content = "\n".join( emails.getSubject() )
+    send("to_me@mit.edu", "Murmur: Hourly digest", email_content)
+
+onTime(doAction, 60)
+		</code>
+	</pre>
+
+	<h3>onCustom(doAction, cond, folders=["INBOX"])</h3>
+	<p>Fire when user-defined condition is met. If you enable this feature, your email clients don't give you notification until your defined queue is full. Once queue is full, it gives one notification that the targeted email has arrived, empty the queue and then repeat the process. </p>
+	<table class="attributes">
+		<thead>
+			<tr>
+				<th style="width: 20%">Parameter</th>
+				<th style="width: 20%"></th>
+				<th style="width: 60%"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><code>doAction</code></td>
+				<td>callable</td>
+				<td><code>doAction</code> is executed every <code>interval</code></td>
+			</tr>
+			<tr>
+				<td><code>cond</code></td>
+				<td>function</td>
+				<td><code>cond</code> will be passed a Mmail object which captures incoming emails after the event onCustom() has been installed. <code>cond</code> should return boolean value, <code>True</code> when the queue should be flushed and <code>False</code> otherwise. 
+				It must not be null.</td>
+			</tr>
+			<tr>
+				<td>Not yet-<code>folders</code></td>
+				<td>list of string</td>
+				<td>Which folder to watch. If an email arrives at other folder, the event will not be fired.</td>
+			</tr>
+		</tbody>
+	</table> 
+	<br>
+	<pre class="language-html">
+		<code class="python">
+def doAction(emails_at_queue):
+    email_content = "\n".join( emails_at_queue.getSubject() )
+    send("to_me@mit.edu", "Murmur: Full queue", email_content)
+
+def cond(emails_at_queue):
+    if emails_at_queue.getCount() >= 5:
+        return True
+
+    return False
+
+onCustom(doAction, cond, ["INBOX", "folder1"])
+		</code>
+	</pre>
+</section>
+
+<!-- <section>
 	<h1>queue</h1>
 	<p>If you enable this feature, your email clients don't give you notification until your defined queue is full. Once queue is full, it gives one notification that the targeted email has arrived, empty the queue and then repeat the process. </p>
 
@@ -138,7 +262,7 @@ table.attributes {
 			<tr>
 				<td><code>is_queue_full</code></td>
 				<td>function</td>
-				<td><code>is_queue_full</code> will be passed a Mmail object which captures incoming emails after queue() has been called. <code>is_queue_full</code> should return boolean value, True when the queue should be flushed and False otherwise. 
+				<td><code>is_queue_full</code> will be passed a Mmail object which captures incoming emails after queue() has been called. <code>is_queue_full</code> should return boolean value, <code>True</code> when the queue should be flushed and <code>False</code> otherwise. 
 				It must not be null.</td>
 			</tr>
 			<tr>
@@ -147,7 +271,7 @@ table.attributes {
 				<td>What to do when queue is full</td>
 			</tr>
 			<tr>
-				<td>folders</td>
+				<td><code>folders</code></td>
 				<td>list of string</td>
 				<td>Which folder to digest. If an email arrives at other folder, they wouldn't added to the queue.</td>
 			</tr>
@@ -160,6 +284,39 @@ table.attributes {
 				if "Deadline" in inComingMmail.getSubject():
 					return True
 				return False
+		</code>
+	</pre>
+</section> -->
+
+<section>
+	<h1>not yet-search</h1>
+	<p>Search messages which are met the given condition. Returns a <code>Mmail</code> object.</p>
+
+	<table class="attributes">
+		<thead>
+			<tr>
+				<th style="width: 20%">Parameter</th>
+				<th style="width: 20%"></th>
+				<th style=""></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><code>search_creteria</code></td>
+				<td>dictionary</td>
+				<td>Search by email fields e.g, sender, receipient, subject, content, flags.. </td>
+			</tr>
+			<tr>
+				<td><code>folder</code></td>
+				<td>list of string</td>
+				<td>Which folder to search for.</td>
+			</tr>
+		</tbody>
+	</table> 
+	<br>
+	<pre class="language-html">
+		<code class="python">
+			search({"from": "soya", "subject": "free food", "received_since": "~~"}, ["INBOX"])
 		</code>
 	</pre>
 </section>
@@ -178,19 +335,56 @@ table.attributes {
 		</thead>
 		<tbody>
 			<tr>
-				<td>to_addr</td>
+				<td><code>to_addr</code></td>
 				<td>string</td>
 				<td>Receipient address</td>
 			</tr>
 			<tr>
-				<td>subject</td>
+				<td><code>subject</code></td>
 				<td>string</td>
 				<td>A subjet of email</td>
 			</tr>
 			<tr>
-				<td>content</td>
+				<td><code>content</code></td>
 				<td>string</td>
 				<td>Content of email</td>
+			</tr>
+			<tr>
+				<td><code>admin</code></td>
+				<td>boolean</td>
+				<td>if <code>True</code>, the email is sent by our admin address. Otherwise, from your own email address.</td>
+			</tr>
+		</tbody>
+	</table> 
+	<br>
+	<!-- <pre class="language-html">
+		<code class="python">
+		</code>
+	</pre> -->
+</section>
+
+<section>
+	<h1>markRead</h1>
+	<p>Mark messages as read or unread </p>
+
+	<table class="attributes">
+		<thead>
+			<tr>
+				<th style="width: 20%">Parameter</th>
+				<th style="width: 20%"></th>
+				<th style=""></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><code>messages</code></td>
+				<td>Mmail</td>
+				<td><code>Mmail</code> object</td>
+			</tr>
+			<tr>
+				<td><code>read</code></td>
+				<td>boolean</td>
+				<td>Mark as read if <code>read</code> is <code>True</code>, otherwise unread</td>
 			</tr>
 		</tbody>
 	</table> 

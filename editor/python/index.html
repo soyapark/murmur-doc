@@ -15,10 +15,30 @@
 <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
 <style type="text/css">
   .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
-  body { padding: 20px; }
 
   .info {color: white;}
   .error { color: red; }
+
+  .header {
+    padding: 10px 16px;
+    background: #555;
+    color: #f1f1f1;
+  }
+
+  .content {
+    padding: 16px;
+    padding-top: 30px;
+  }
+
+  .sticky {
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+
+  .sticky + .content {
+    padding-top: 70px;
+  }
 
   #console {
     background: black;width:100%;padding-left: 40px;
@@ -56,44 +76,57 @@
     display: none;
   }
 
+  .CodeMirror {
+    height: 500px;
+  }
 </style>
 
 
 <body>
   <div id="loader"></div>
 
-  <h2>Murmur: Program your inbox!</h2>
-  <div id="login_window">
-    Email address: <input id="username" type="text"/>
-    Password: <input id="password" type="password"/>
-    <button onclick="authenticate()">Log in</button>
-    <span id="auth-msg"></span>
+  <!-- <div class="header sticky" id="myHeader" style="background-color: Tomato;">
+    <span>Murmur is currently shut down. Let the <a href="mailto:sbhappylee@gmail.com">admin</a> know it is not working!</span>
+  </div> -->
+
+  <div class="content">
+    <h2>Murmur: Program your inbox!</h2>
+    <div id="login_window">
+      Email address: <input id="username" type="text"/>
+      Password: <input id="password" type="password"/>
+      <button onclick="authenticate()">Log in</button>
+      <span id="auth-msg"></span>
+      <br/><br/>
+      <p>* This project is currently undergoing development. <br/>
+        We might ask you log in again and again to Murmur whenever we reboot Murmur. <br/> 
+        This is due we don't store your password nor email contents but your email source code for user-behavior analysis purpose.</p>
+    </div>
+
+    <div id="status">
+      Inbox engine status: 
+      <div class="fa-3x">
+        <span class="fa-layers fa-fw">
+          <i class="fas fa-cog"></i>
+          <span class="fa-layers-counter idle-mark" style="background:Tomato">IDLE</span>
+        </span>
+      </div>
+      <button onclick="logout()">Log out</button>
+      <!-- <span id="auth-msg"></span> -->
+    </div>
+
+        <div style="padding-top:  50px;">
+          <textarea id="code" name="code">
+def doAction(newEmail):
+    if "free food" in newEmail.getSubject()[0]:
+        send("my_colleague@mit.edu", "Free food is here!", "\n".join(newEmail.getSubject()))
+
+onArrive(doAction, ["INBOX"])
+    </textarea>
+    <button id="submit" onclick="submitCommand()" disabled>Submit</button>
+    </div>
+
+    <div id="console" class="info"></div>
   </div>
-
-  <div id="status">
-    Inbox engine status: <i class="fas fa-cog fa-3x"></i>
-    <button onclick="logout()">Log out</button>
-    <!-- <span id="auth-msg"></span> -->
-  </div>
-
-      <div style="padding-top:  50px;"><textarea id="code" name="code">
-def notifyWhen(incoming):
-    # Notify me every 5 emails arrive 
-    if incoming.getCount() >= 5 or any(("karger" in s) or ("axz" in s) for s in incoming.getSender()):
-        return True
-
-    return False
-
-def action():
-    send("to_addr@mit.edu", "Murmur: Full inbox", "Check your inbox")
-    
-queue(notifyWhen, action, ["INBOX", "folder1"])
-  </textarea>
-  <button id="submit" onclick="submitCommand()" disabled>Submit</button>
-  </div>
-
-  <div id="console" class="info"></div>
-
   <script>
     var config = {
       apiKey: "AIzaSyCOFXECn39JmWeykyPVv2fU6GClWNJeUek",
@@ -108,6 +141,16 @@ queue(notifyWhen, action, ["INBOX", "folder1"])
     var uid = "";
     var auth = false, execute = false, first = true;
 
+    firebase.database().ref("running/").on('value', function(snapshot) {
+        if(!snapshot.val()) {
+          $('<div class="header sticky" id="myHeader" style="background-color: Tomato;"><span>Murmur is currently shut down. Let the <a href="mailto:sbhappylee@gmail.com">admin</a> know it is not working!</span></div>').prependTo('body');
+        }
+        else {
+          $('.header').remove();
+        }
+      });
+    
+
     function authenticate() {
       showLoader(true);
 
@@ -115,10 +158,10 @@ queue(notifyWhen, action, ["INBOX", "folder1"])
       var playersRef = firebase.database().ref("users/" + uid);
         // users/2017-3-6
 
-      playersRef.set({
-              "type": "auth",
+      playersRef.push({
               "username": document.getElementById("username").value,
-              "password": document.getElementById("password").value
+              "password": document.getElementById("password").value,
+              "type": "auth"
           },
           function(response) {
             if(response)
@@ -138,6 +181,7 @@ queue(notifyWhen, action, ["INBOX", "folder1"])
     }
 
     function logout() {
+      submitCommand("logout()");
       $("#login_window").show();
       $("#status").hide();
     }
@@ -171,8 +215,8 @@ queue(notifyWhen, action, ["INBOX", "folder1"])
               $("button").prop("disabled",false);
               auth = true;
 
-              
-              myVar = setTimeout(login_success, 4000);
+              login_success()
+              // myVar = setTimeout(login_success, 4000);
             }
             else {
               $("#auth-msg").text(snapshot.val()["auth"]);
@@ -186,14 +230,22 @@ queue(notifyWhen, action, ["INBOX", "folder1"])
           }
           else { // after auth success
             if(!auth || !execute) return;
+            var currentdate = new Date(); 
+            var datetime = currentdate.getDate() + "/"
+                        + (currentdate.getMonth()+1)  + "/" 
+                        + currentdate.getFullYear() + " @ "  
+                        + currentdate.getHours() + ":"  
+                        + currentdate.getMinutes() + ":" 
+                        + currentdate.getSeconds()
+                        + " | ";
 
             if(snapshot.val()["type"] == "error")  {
-              $("#console").text(snapshot.val()["content"]);
-              $("#console").addClass("error").removeClass('info');
+              $( "<p>" + datetime + snapshot.val()["content"] + "</p>" ).appendTo( "#console" )
+                .addClass("error");
             }
             else {
-              $("#console").text(snapshot.val()["content"]);
-              $("#console").addClass("info").removeClass("error");
+              $( "<p>" + datetime + snapshot.val()["content"] + "</p>" ).appendTo( "#console" )
+                .addClass("info");
             }
           }
 
@@ -201,8 +253,15 @@ queue(notifyWhen, action, ["INBOX", "folder1"])
 
       var ruuningRef = firebase.database().ref("running/" + uid);
       ruuningRef.on('value', function(snapshot) {
-        if(snapshot.val()) spinStatusCog(true);
-        else spinStatusCog(false);
+        if(snapshot.val()) {
+          spinStatusCog(true);
+          editor.setValue(snapshot.val()) 
+          $(".idle-mark").hide();
+        }
+        else {
+          spinStatusCog(false);
+          $(".idle-mark").show();
+        }
       });
     }
 
@@ -217,7 +276,7 @@ queue(notifyWhen, action, ["INBOX", "folder1"])
       return hash;
     }
 
-    function submitCommand() {
+    function submitCommand(cmd) {
       if(uid == "") {
         alert("Log in first!");
         return;
@@ -232,7 +291,7 @@ queue(notifyWhen, action, ["INBOX", "folder1"])
       playersRef.push({
               "type": "cmd",
               "uid": uid.toString(),
-              "content": editor.getValue()
+              "content": cmd ? cmd: editor.getValue()
           },
           function(response) {
             execute = true;
