@@ -141,7 +141,8 @@ onArrive(doAction, ["INBOX"])
     var uid = "";
     var auth = false, execute = false, first = true;
 
-    firebase.database().ref("running/").on('value', function(snapshot) {
+    var runningRef = firebase.database().ref("running/");
+    runningRef.on('value', function(snapshot) {
         if(!snapshot.val()) {
           $('<div class="header sticky" id="myHeader" style="background-color: Tomato;"><span>Murmur is currently shut down. Let the <a href="mailto:sbhappylee@gmail.com">admin</a> know it is not working!</span></div>').prependTo('body');
         }
@@ -184,6 +185,7 @@ onArrive(doAction, ["INBOX"])
       submitCommand("logout()");
       $("#login_window").show();
       $("#status").hide();
+      window.location.reload(true);
     }
 
     function showLoader(show) {
