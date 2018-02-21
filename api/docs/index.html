@@ -165,8 +165,8 @@ onArrive(doAction, ["INBOX", "folder1"])
 		</code>
 	</pre>
 
-	<h3>Not yet - onTime(doAction, interval=60)</h3>
-	<p>Fire every given interval.</p>
+	<h3>Not yet - onTime(doAction, minutes=60 | seconds | hours)</h3>
+	<p>Fire and execute <code>doAction</code> once when time is up. If you are looking for a function for recurring events, check <code><a href="#repeat">repeat</a></code></p>
 	<table class="attributes">
 		<thead>
 			<tr>
@@ -182,9 +182,9 @@ onArrive(doAction, ["INBOX", "folder1"])
 				<td><code>doAction</code> is executed every <code>interval</code></td>
 			</tr>
 			<tr>
-				<td><code>interval</code></td>
+				<td><code>minutes | hours</code></td>
 				<td>number</td>
-				<td><code>interval</code> in minute.</td>
+				<td>This parameter could be in minutes or hours. In minutes by default.</td>
 			</tr>
 		</tbody>
 	</table> 
@@ -246,9 +246,9 @@ onCustom(doAction, cond, ["INBOX", "folder1"])
 	</pre>
 </section>
 
-<!-- <section>
-	<h1>queue</h1>
-	<p>If you enable this feature, your email clients don't give you notification until your defined queue is full. Once queue is full, it gives one notification that the targeted email has arrived, empty the queue and then repeat the process. </p>
+<section>
+	<h1>repeat</h1>
+	<p></p>
 
 	<table class="attributes">
 		<thead>
@@ -260,33 +260,28 @@ onCustom(doAction, cond, ["INBOX", "folder1"])
 		</thead>
 		<tbody>
 			<tr>
-				<td><code>is_queue_full</code></td>
-				<td>function</td>
-				<td><code>is_queue_full</code> will be passed a Mmail object which captures incoming emails after queue() has been called. <code>is_queue_full</code> should return boolean value, <code>True</code> when the queue should be flushed and <code>False</code> otherwise. 
-				It must not be null.</td>
+				<td><code>doAction</code></td>
+				<td>callable</td>
+				<td><code>doAction</code> is executed every given interval.</td>
 			</tr>
 			<tr>
-				<td><code>action</code></td>
-				<td>function</td>
-				<td>What to do when queue is full</td>
-			</tr>
-			<tr>
-				<td><code>folders</code></td>
-				<td>list of string</td>
-				<td>Which folder to digest. If an email arrives at other folder, they wouldn't added to the queue.</td>
+				<td><code>minutes | hours</code></td>
+				<td>number</td>
+				<td>This parameter could be in minutes or hours. In minutes by default.</td>
 			</tr>
 		</tbody>
 	</table> 
 	<br>
 	<pre class="language-html">
 		<code class="python">
-			def is_queue_full(inComingMmail):
-				if "Deadline" in inComingMmail.getSubject():
-					return True
-				return False
+			def doAction(emails):
+			    email_content = "\n".join( emails.getSubject() )
+			    send("to_me@mit.edu", "Murmur: Hourly digest", email_content)
+
+			repeat(doAction, minutes = 60)
 		</code>
 	</pre>
-</section> -->
+</section>
 
 <section>
 	<h1>not yet-search</h1>

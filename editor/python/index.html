@@ -13,6 +13,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+<script src="conf.js"></script>
+
 <style type="text/css">
   .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
 
@@ -128,15 +130,7 @@ onArrive(doAction, ["INBOX"])
     <div id="console" class="info"></div>
   </div>
   <script>
-    var config = {
-      apiKey: "AIzaSyCOFXECn39JmWeykyPVv2fU6GClWNJeUek",
-      authDomain: "murmur-183618.firebaseapp.com",
-      databaseURL: "https://murmur-183618.firebaseio.com",
-      projectId: "murmur-183618",
-      storageBucket: "murmur-183618.appspot.com",
-      messagingSenderId: "1035128514395"
-    };
-    firebase.initializeApp(config);
+    
 
     var uid = "";
     var auth = false, execute = false, first = true;
