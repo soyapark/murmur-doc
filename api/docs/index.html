@@ -203,7 +203,7 @@ table.attributes {
 			<tr>
 				<td><code>doAction</code></td>
 				<td>callable</td>
-				<td><code>doAction</code> is executed when a new email has arrived.</td>
+				<td><code>doAction</code>  will be passed a Mmail object which contains an incoming email</td>
 			</tr>
 			<tr>
 				<td>Not yet-<code>folders</code></td>
@@ -237,7 +237,7 @@ onArrive(doAction, ["INBOX", "folder1"])
 			<tr>
 				<td><code>doAction</code></td>
 				<td>callable</td>
-				<td><code>doAction</code> is executed every <code>interval</code></td>
+				<td><code>doAction</code>  will be passed a Mmail object which contains a pile of incoming emails during the time span.</td>
 			</tr>
 			<tr>
 				<td><code>minutes | hours</code></td>
