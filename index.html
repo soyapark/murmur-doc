@@ -15,7 +15,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-<script src="js/libs/bootstrap.bundle.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 <script src="js/libs/fontawesome-all.min.js"></script>
 <script src="js/libs/codemirror.js"></script>
@@ -38,10 +38,10 @@
     color: #f1f1f1;
   }
 
-  /*.header {
+  .content {
     padding: 16px;
     padding-top: 30px;
-  }*/
+  }
 
   .sticky {
     position: fixed;
@@ -49,7 +49,7 @@
     width: 100%;
   }
 
-  .sticky + .header {
+  .sticky + .content {
     padding-top: 50px;
   }
 
@@ -92,95 +92,46 @@
   .CodeMirror {
     height: 400px;
   }
-
-  .search_draggable table {
-    appearance:button;
-    -moz-appearance:button; 
-    -webkit-appearance:button;
-    display: inline-block;
-    padding: 2px 5px;
-  }
 </style>
 
 
 <body>
-    <div class="header">
-      <h1>Murmur: Program your inbox!</h1>
-      <div id="login_window" class="row">
 
-        <!-- Open login modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-login">
-          Log in to my email
-        </button>
-      </div>
-            <!-- <p>* This project is currently undergoing development. <br/>
-              We might ask you log in again to Murmur if you log in with a plain password. <br/> 
-              This is due we don't store your password nor email contents but your email source code for user-behavior analysis purpose.</p> -->
-    </div>
-    
-
-    <!-- Modal -->
-    <div class="modal fade" data-backdrop="static" data-keyboard="false" id="modal-login" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Log into my email</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="tab-content" id="myTabContent">
-              <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval=false>
-                <div class="carousel-inner">
-                  <div class="carousel-item active">
-                    <div style="padding-left: 10px;">
-                      Email address: <input id="username" data-toggle="tooltip" data-placement="top" data-trigger="hide" title="Invalid address" style="margin-top: 40px;" type="text"/>
-                    </div>
-
-                    <button type="button" href="#carouselExampleSlidesOnly" onclick="slideLoginModal()" style="float: right" class="btn btn-primary">Next</button>
-                  </div>
-                  <div class="carousel-item">
-                    <ul class="nav nav-tabs" id="login_mode" role="tablist">
-                      <li class="nav-item">
-                        <a class="nav-link active" id="plain-tab" data-toggle="tab" href="#plain-tab-content" role="tab" aria-controls="home" aria-selected="true">Plain</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" id="oauth-tab" data-toggle="tab" title="Oauth is not supported for this email host" href="#oauth-tab-content" role="tab" aria-controls="profile" aria-selected="false">Oauth</a>
-                      </li>
-                    </ul>
-
-                    <div class="tab-pane fade show active" id="plain-tab-content" role="tabpanel" aria-labelledby="plain-tab">
-                      Password: <input id="password" type="password"/>
-                      <br/>
-                      <h6 style="margin: 10px;">Before you start, go to <a href="https://myaccount.google.com/lesssecureapps">"Less secure apps" section of my Account.</a> And Enable less secure log in.</h6>
-                      <button class="btn btn-primary" style="float: right;" onclick="authenticate()">Log in</button>
-                    </div>
-                    <div class="tab-pane fade" id="oauth-tab-content" role="tabpanel" aria-labelledby="oauth-tab">
-                      <a class="btn btn-info" style="color:white;" target="_blank" href="https://accounts.google.com/o/oauth2/auth?client_id=1035128514395-ljeutpptbag8unpv2lgo1k93eiq006f6.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code&scope=https%3A%2F%2Fmail.google.com%2F">Get access code</a>
-                      <br/><br/>
-                      access code: <input id="oauth" type="text"/>
-                      <button class="btn btn-primary" onclick="authenticate()">Log in</button>
-                    </div>
-                    <div id="loader"></div>
-                    <span id="auth-msg"></span>
-                    <button type="button" href="#carouselExampleSlidesOnly" data-slide="prev" class="btn btn-secondary">Back</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            
-          </div>
-          <!-- <div class="modal-footer">
-            <button type="button" href="#carouselExampleSlidesOnly" data-slide="prev" class="btn btn-secondary">Back</button>
-            <button type="button" href="#carouselExampleSlidesOnly" onclick="slideLoginModal()" class="btn btn-primary">Next</button>
-          </div> -->
+  <div class="content">
+    <h1>Murmur: Program your inbox!</h1>
+    <div id="login_window" class="row">
+      <br/>
+        <div style="padding-left: 10px;">
+          Email address: <input id="username" style="margin-top: 40px;" type="text"/>
         </div>
-      </div></div>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#plain-tab-content" role="tab" aria-controls="home" aria-selected="true">Plain</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="profile-tab" data-toggle="tab" href="#oauth-tab-content" role="tab" aria-controls="profile" aria-selected="false">Oauth</a>
+            <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="plain-tab-content" role="tabpanel" aria-labelledby="home-tab">
+              Password: <input id="password" type="password"/>
+              <button class="btn" onclick="authenticate()">Log in</button>
+            </div>
+            <div class="tab-pane fade" id="oauth-tab-content" role="tabpanel" aria-labelledby="profile-tab">
+              <a class="btn btn-info" style="color:white;" target="_blank" href="https://accounts.google.com/o/oauth2/auth?client_id=1035128514395-ljeutpptbag8unpv2lgo1k93eiq006f6.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code&scope=https%3A%2F%2Fmail.google.com%2F">Get access code</a>
+              <br/><br/>
+              access code: <input id="oauth" type="text"/>
+              <button class="btn" onclick="authenticate()">Log in</button>
+            </div>
+          </div>
+            </li>
+          </ul>
+    </div>
+          <span id="auth-msg"></span>
+          <!-- <p>* This project is currently undergoing development. <br/>
+            We might ask you log in again to Murmur if you log in with a plain password. <br/> 
+            This is due we don't store your password nor email contents but your email source code for user-behavior analysis purpose.</p> -->
 
 
-    <div class="row" style="margin-left: 10px;">
+    <div class="row">
       <div class="col-7">
         <div id="status">
           Inbox engine status: 
@@ -202,10 +153,10 @@
                 <div class="card-block">
                   <textarea id="code" name="code">
 def doAction(newEmail):
-    if "free food" in newEmail.get_subjects()[0]:
-        send("my_colleague@mit.edu", "Free food is here!", "\n".join(newEmail.get_subjects()))
+    if "free food" in newEmail.getSubject()[0]:
+        send("my_colleague@mit.edu", "Free food is here!", "\n".join(newEmail.getSubject()))
 
-onArrive(doAction)
+onArrive(doAction, ["INBOX"])
                   </textarea>
                 </div>
               </div>
@@ -227,38 +178,7 @@ onArrive(doAction)
         
         <!-- The sandbox template: -->
         <script type="text/template" id="tplSandbox">
-          <pre class="output">
-            <div class="search_draggable" >
-                <table style="float: left;" draggable="true" class="table">
-                  <!-- <thead>
-                  <tr><td>
-                    <i class="fas fa-arrows-alt"></i>
-                  </td></tr></thead> -->
-                  <tr>
-                  <td><i class="fas fa-arrows-alt"></i></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>soya@mit.edu</td>
-                  <td>Event reminder: The MIT Intelligence Quest Launch</td>
-                </tr>
-                <tr>
-                  <td>karger@mit.edu</td>
-                  <td>When is group meeting?</td>
-                </tr>
-                <tr>
-                  <td>axz@mit.edu</td>
-                  <td>[EECS GSA] Health and Wellness Dinner - March 2</td>
-                </tr>
-              </table>
-        
-             <!--  <p draggable="true" id="1">This</p>
-              <p draggable="true" id="2">is</p>
-              <p draggable="true" id="3">a</p>
-              <p draggable="true" id="4">simple</p>
-              <p draggable="true" id="5">Drag'n'Drop-Test</p> -->
-            </div>
-          </pre>
+          <pre class="output"></pre>
           <div class="input">
             <textarea rows="1" placeholder="<%= placeholder %>"></textarea>
           </div>
@@ -271,6 +191,8 @@ onArrive(doAction)
       </div>
     </div>
   </div>
+
+  <div id="loader"></div>
 
   <!-- Underscore, Backbone, backbone-localStorage, jQuery -->
 <script src="js/libs/console/underscore.min.js"></script>
@@ -288,11 +210,6 @@ onArrive(doAction)
 <!-- When ready, create the model and view -->
   <script type="text/javascript">
     jQuery(document).ready(function($) {
-      document.addEventListener('dragstart', function (event) {
-        event.dataTransfer.setData('source', '<span class="badge badge-info">Info</span>')
-        // event.dataTransfer.setData('Text', event.target.innerHTML);
-      });
-
       // Create the sandbox:
       window.sandbox = new Sandbox.View({
         el : $('#sandbox'),
@@ -306,42 +223,42 @@ onArrive(doAction)
       prettyPrint();
 
       // GUI demo controls:
-      // DAT.GUI.autoPlace = false;
-      // DAT.GUI.supressHotKeys = true;
+      DAT.GUI.autoPlace = false;
+      DAT.GUI.supressHotKeys = true;
 
-      // window.gui = new DAT.GUI();
+      window.gui = new DAT.GUI();
 
-      // gui.name('Commands to try out');
-      // gui.close();
+      gui.name('Commands to try out');
+      gui.close();
 
-      // $(gui.domElement).css({
-      //   position:"absolute",
-      //   top:0,
-      //   right:-10
-      // }).appendTo('body');
+      $(gui.domElement).css({
+        position:"absolute",
+        top:0,
+        right:-10
+      }).appendTo('body');
 
-      // // Some custom callback functions for dat.gui:
-      // sandbox.custom1 = function() {  sandbox.currentHistory = ":help"; sandbox.update(); sandbox.textarea.focus(); };
-      // sandbox.custom2 = function() {  sandbox.currentHistory = ":clear"; sandbox.update(); sandbox.textarea.focus(); };
-      // sandbox.custom3 = function() {  sandbox.currentHistory = "JSON.stringify(sandbox.model.get('history'), 0, 4);"; sandbox.update(); sandbox.textarea.focus(); };
-      // sandbox.custom4 = function() {  sandbox.currentHistory = "sandbox.resultPrefix = '&raquo; '"; sandbox.update(); sandbox.textarea.focus(); };
-      // sandbox.custom5 = function() {  sandbox.currentHistory = "var who = 'you', where = 'your life';"; sandbox.update(); sandbox.textarea.focus(); };
-      // sandbox.custom6 = function() { sandbox.currentHistory = "function saySomethingFunny() {\n\treturn 'something funny';\n};\nsaySomethingFunny(); // hit return!"; sandbox.update(); sandbox.textarea.focus(); };
-      // sandbox.custom7 = function() {  sandbox.currentHistory = "somethingUndefined; // hit enter!"; sandbox.update(); sandbox.textarea.focus(); };
-      // sandbox.custom8 = function() {  sandbox.model.set({ iframe : true }); sandbox.model.addHistory({ command : " ", result : "Commands are now being evaluated inside a sandboxed iframe." }); sandbox.model.iframeSetup(); };
-      // sandbox.custom9 = function() {  sandbox.currentHistory = ":load http://code.jquery.com/jquery-1.6.4.js"; sandbox.update(); sandbox.textarea.focus(); };
+      // Some custom callback functions for dat.gui:
+      sandbox.custom1 = function() {  sandbox.currentHistory = ":help"; sandbox.update(); sandbox.textarea.focus(); };
+      sandbox.custom2 = function() {  sandbox.currentHistory = ":clear"; sandbox.update(); sandbox.textarea.focus(); };
+      sandbox.custom3 = function() {  sandbox.currentHistory = "JSON.stringify(sandbox.model.get('history'), 0, 4);"; sandbox.update(); sandbox.textarea.focus(); };
+      sandbox.custom4 = function() {  sandbox.currentHistory = "sandbox.resultPrefix = '&raquo; '"; sandbox.update(); sandbox.textarea.focus(); };
+      sandbox.custom5 = function() {  sandbox.currentHistory = "var who = 'you', where = 'your life';"; sandbox.update(); sandbox.textarea.focus(); };
+      sandbox.custom6 = function() { sandbox.currentHistory = "function saySomethingFunny() {\n\treturn 'something funny';\n};\nsaySomethingFunny(); // hit return!"; sandbox.update(); sandbox.textarea.focus(); };
+      sandbox.custom7 = function() {  sandbox.currentHistory = "somethingUndefined; // hit enter!"; sandbox.update(); sandbox.textarea.focus(); };
+      sandbox.custom8 = function() {  sandbox.model.set({ iframe : true }); sandbox.model.addHistory({ command : " ", result : "Commands are now being evaluated inside a sandboxed iframe." }); sandbox.model.iframeSetup(); };
+      sandbox.custom9 = function() {  sandbox.currentHistory = ":load http://code.jquery.com/jquery-1.6.4.js"; sandbox.update(); sandbox.textarea.focus(); };
       
-      // gui.add(sandbox, 'custom1').name('Show <code>:help</code> menu');
-      // gui.add(sandbox, 'custom2').name('<code>:clear</code> the command history');
-      // gui.add(sandbox, 'custom3').name('View all history');
-      // gui.add(sandbox, 'custom4').name('Set the result/response prefix');
-      // gui.add(sandbox, 'custom5').name('Define some variables');
-      // gui.add(sandbox, 'custom6').name('Multi-line input (use <code>alt</code> + <code>return</code>/<code>up</code>/<code>down</code>)');
-      // gui.add(sandbox, 'custom7').name('Throw an error');
-      // gui.add(sandbox, 'custom8').name('Switch on <code>iFrame</code> sandboxing');
-      // gui.add(sandbox, 'custom9').name('<code>:load</code> a script (jQuery)');
+      gui.add(sandbox, 'custom1').name('Show <code>:help</code> menu');
+      gui.add(sandbox, 'custom2').name('<code>:clear</code> the command history');
+      gui.add(sandbox, 'custom3').name('View all history');
+      gui.add(sandbox, 'custom4').name('Set the result/response prefix');
+      gui.add(sandbox, 'custom5').name('Define some variables');
+      gui.add(sandbox, 'custom6').name('Multi-line input (use <code>alt</code> + <code>return</code>/<code>up</code>/<code>down</code>)');
+      gui.add(sandbox, 'custom7').name('Throw an error');
+      gui.add(sandbox, 'custom8').name('Switch on <code>iFrame</code> sandboxing');
+      gui.add(sandbox, 'custom9').name('<code>:load</code> a script (jQuery)');
 
-      // gui.open();
+      gui.open();
 
     });
   </script>
@@ -355,10 +272,10 @@ onArrive(doAction)
     var runningRef = firebase.database().ref("running/");
     runningRef.on('value', function(snapshot) {
         if(!snapshot.val()) {
-          $('<div class="header sticky" id="myHeader" style="background-color: Tomato;"><span>Murmur is currently shut down. Let the <a href="mailto:sbhappylee@gmail.com">admin</a> knows it is not working!</span></div>').prependTo('body');
+          $('<div class="header sticky" id="myHeader" style="background-color: Tomato;"><span>Murmur is currently shut down. Let the <a href="mailto:sbhappylee@gmail.com">admin</a> know it is not working!</span></div>').prependTo('body');
         }
         else {
-          $('.sticky').remove();
+          $('.header').remove();
         }
       });
     
@@ -391,7 +308,6 @@ onArrive(doAction)
             if(response)
               console.log("Firebase: Error at submiting command " + response);
             else {
-
               // successfully submitted, show a msg to user
               installListener();
             }
@@ -402,7 +318,6 @@ onArrive(doAction)
       $("#login_window").hide();
       $("#status").show();
 
-      $("#modal-login").modal('hide');
       showLoader(false);
     }
 
@@ -418,31 +333,6 @@ onArrive(doAction)
         $("#loader").show();
       else 
         $("#loader").hide();
-    }
-
-    function slideLoginModal() {
-      var slide_index = $('.carousel-item.active').index();
-
-      if (slide_index == 0) {
-        // if valid email address
-        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(document.getElementById("username").value)) {
-          $("#oauth-tab").removeClass("disabled");
-          $("#oauth-tab").tooltip('dispose');
-          $('#login_mode li:first-child a').tab('show');
-
-          if(document.getElementById("username").value.split("@")[1].split(".")[0] != "gmail") {
-            $("#oauth-tab").addClass("disabled"); // disable Oauth
-            $("#oauth-tab").tooltip('toggle');
-            $("#oauth-tab").tooltip('hide');
-          }
-             
-
-          $(".carousel").carousel('next');
-        }
-        else {
-          $("#username").tooltip('show');
-        }
-      }
     }
 
     function spinStatusCog(spin) {
